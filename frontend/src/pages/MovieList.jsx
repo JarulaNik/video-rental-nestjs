@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Typography, Alert } from '@mui/material';
 import MovieCard from '../components/MovieCard.jsx';
 import { getMovies } from '../services/movieService.js';
 import LoadingError from '../components/LoadingError.jsx';
@@ -16,23 +16,23 @@ const MovieList = () => {
         setMovies(data);
         setIsLoading(false);
       } catch (error) {
-        setError(error);
+        setError(error.message); // Отображаем сообщение об ошибке
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   return (
     <Grid container spacing={2} paddingTop={2} sx={{ paddingLeft: '20px' }}>
-      <LoadingError isLoading={isLoading} error={error} /> {/* Рендерим LoadingError */}
-      <Grid item xs={12}>
-        <Typography variant="h5" gutterBottom>
-          Список фильмов
-        </Typography>
-      </Grid>
-      <Grid container spacing={2} justifyContent="flex-start">
+      {/* Рендерим LoadingError */}
+      <LoadingError isLoading={isLoading} error={error} />
+
+      <Typography variant="h4" gutterBottom>
+        Список фильмов
+      </Typography>
+
+      <Grid container spacing={2} paddingTop={2} sx={{ paddingLeft: '20px' }}>
         {movies.map((movie) => (
           <Grid item key={movie.id} xs={12} sm={6} md={4} lg={3}
                 sx={{ height: '350px' }}>

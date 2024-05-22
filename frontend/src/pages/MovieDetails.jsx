@@ -1,4 +1,3 @@
-// src/pages/MovieDetails.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -13,6 +12,7 @@ import {
   Select,
   MenuItem,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { getMovieById, rentMovie } from '../services/movieService';
 
@@ -22,6 +22,8 @@ const MovieDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [rentalPeriod, setRentalPeriod] = useState('24h');
+  const [rentSuccess, setRentSuccess] = useState(false);
+  const [rentError, setRentError] = useState(null); // Добавьте состояние для ошибки аренды
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,9 +65,9 @@ const MovieDetails = () => {
           height: '100vh',
         }}
       >
-        <Typography variant="h6">
-          Произошла ошибка при загрузке списка фильмов. Попробуйте позже.
-        </Typography>
+        <Alert severity="error">
+          {error}
+        </Alert>
       </div>
     );
   }
@@ -73,10 +75,13 @@ const MovieDetails = () => {
   const handleRent = async () => {
     try {
       await rentMovie(movieId, rentalPeriod);
-      navigate('/profile'); // Redirect to profile page after renting
+      setRentSuccess(true);
+      setTimeout(() => {
+        navigate('/profile'); // Перенаправление на профиль после аренды
+      }, 2000);
     } catch (error) {
       console.error('Error renting movie:', error);
-      // Handle error appropriately (e.g., display error message)
+      setRentError(error.message); // Отображение ошибки аренды
     }
   };
 
@@ -88,7 +93,7 @@ const MovieDetails = () => {
       justifyContent="center"
       style={{ paddingTop: '50px' }}
     >
-      <Grid item xs={12}>
+      <Grid item xs={12} md={8}>
         <Card>
           <CardMedia
             component="img"
@@ -97,58 +102,67 @@ const MovieDetails = () => {
             alt={movie.title}
           />
           <CardContent>
-            <Typography variant="h5" gutterBottom>
+            <Typography gutterBottom variant="h5" component="div">
               {movie.title}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body2" color="text.secondary">
               Genre: {movie.genre}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body2" color="text.secondary">
               Release Year: {movie.releaseYear}
             </Typography>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body2" color="text.secondary">
               Description: {movie.description}
             </Typography>
-            {/* Add rental prices here */}
-            <Typography variant="body1" gutterBottom>
+            <Typography variant="body2" color="text.secondary">
               Rental Prices:
-              <ul>
-                <li>24h: ${movie.rentalPrice['24h']}</li>
-                <li>7d: ${movie.rentalPrice['7d']}</li>
-                <li>1m: ${movie.rentalPrice['1m']}</li>
-                <li>Lifetime: ${movie.rentalPrice.lifetime}</li>
-              </ul>
             </Typography>
-            <FormControl
-              fullWidth
-              variant="outlined"
-              style={{ marginBottom: '16px' }}
-            >
-              <InputLabel htmlFor="rental-period-select">
-                Rental Period
-              </InputLabel>
-              <Select
-                labelId="rental-period-select"
-                id="rental-period-select"
-                value={rentalPeriod}
-                onChange={(e) => setRentalPeriod(e.target.value)}
-                label="Rental Period"
-              >
-                <MenuItem value="24h">24 hours</MenuItem>
-                <MenuItem value="7d">7 days</MenuItem>
-                <MenuItem value="1m">1 month</MenuItem>
-                <MenuItem value="lifetime">Lifetime</MenuItem>
-              </Select>
-            </FormControl>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleRent}
-            >
-              Rent Now
-            </Button>
+            <ul>
+              <li>24h: ${movie.rentalPrice['24h']}</li>
+              <li>7d: ${movie.rentalPrice['7d']}</li>
+              <li>1m: ${movie.rentalPrice['1m']}</li>
+              <li>Lifetime: ${movie.rentalPrice.lifetime}</li>
+            </ul>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <FormControl
+          fullWidth
+          variant="outlined"
+          style={{ marginBottom: '16px' }}
+        >
+          <InputLabel id="rental-period-select-label">
+            Rental Period
+          </InputLabel>
+          <Select
+            labelId="rental-period-select-label"
+            id="rental-period-select"
+            value={rentalPeriod}
+            onChange={(e) => setRentalPeriod(e.target.value)}
+            label="Rental Period"
+          >
+            <MenuItem value="24h">24 hours</MenuItem>
+            <MenuItem value="7d">7 days</MenuItem>
+            <MenuItem value="1m">1 month</MenuItem>
+            <MenuItem value="lifetime">Lifetime</MenuItem>
+          </Select>
+        </FormControl>
+        <Button variant="contained" color="primary" onClick={handleRent} disabled={rentSuccess}>
+          Rent Now
+        </Button>
+        {/* Отображаем сообщение об успешной аренде */}
+        {rentSuccess && (
+          <Alert severity="success" style={{ marginTop: '16px' }}>
+            Фильм успешно арендован! Вы будете перенаправлены на страницу профиля.
+          </Alert>
+        )}
+        {/* Отображаем сообщение об ошибке аренды */}
+        {rentError && (
+          <Alert severity="error" style={{ marginTop: '16px' }}>
+            {rentError}
+          </Alert>
+        )}
       </Grid>
     </Grid>
   );

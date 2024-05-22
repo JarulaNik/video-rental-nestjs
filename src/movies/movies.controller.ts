@@ -47,13 +47,15 @@ export class MoviesController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post('rent')
-    @ApiCreatedResponse({ type: CreateMovieDto }) // Используем DTO
+    @Post(':id/rent')
+    @ApiCreatedResponse({ type: CreateMovieDto })
     @ApiBearerAuth()
     rentMovie(
-        @Body() rentMovieDto: RentMovieDto,
-        @Request() req,
+      @Param('id') id: string,
+      @Body() rentMovieDto: RentMovieDto,
+      @Request() req,
     ) {
+        rentMovieDto.movieId = id; // Добавьте movieId в rentMovieDto
         return this.moviesService.rentMovie(rentMovieDto, req.user);
     }
 

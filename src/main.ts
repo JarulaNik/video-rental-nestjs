@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { SearchMovieDto } from './movies/dto/search-movie.dto';
-
+import cors from 'cors';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors({ origin: true });
   const config = new DocumentBuilder()
     .setTitle('Video Rental API')
     .setDescription('API for renting movies')

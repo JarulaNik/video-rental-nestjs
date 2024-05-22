@@ -1,6 +1,5 @@
-// src/pages/UserProfile.jsx
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { Grid, Typography, List, ListItem, ListItemText, CircularProgress, Alert } from '@mui/material';
 import { getUser } from '../services/authService';
 import { getRentedMovies } from '../services/movieService';
 
@@ -8,6 +7,7 @@ const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [rentedMovies, setRentedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,6 +18,7 @@ const UserProfile = () => {
         setRentedMovies(rentedMoviesData);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        setError(error);
       } finally {
         setIsLoading(false);
       }
@@ -40,6 +41,23 @@ const UserProfile = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+        }}
+      >
+        <Alert severity="error">
+          {error}
+        </Alert>
+      </div>
+    );
+  }
+
   if (!user) {
     return (
       <div
@@ -50,9 +68,9 @@ const UserProfile = () => {
           height: '100vh',
         }}
       >
-        <Typography variant="h6">
-          User not found. Please log in.
-        </Typography>
+        <Alert severity="error">
+          Пользователь не найден. Пожалуйста, войдите в систему.
+        </Alert>
       </div>
     );
   }
@@ -67,30 +85,36 @@ const UserProfile = () => {
     >
       <Grid item xs={12}>
         <Typography variant="h4" gutterBottom>
-          User Profile
+          Профиль Пользователя
         </Typography>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <Typography variant="h6" gutterBottom>
-          User Information:
+          Информация о Пользователе:
         </Typography>
         <List>
           <ListItem>
-            <ListItemText primary="Email" secondary={user.email} />
+            <ListItemText primary="Email:" secondary={user.email} />
           </ListItem>
-          {/* Add other user details here */}
+          {/* Добавьте сюда другие детали пользователя */}
         </List>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} md={6}>
         <Typography variant="h6" gutterBottom>
-          Rented Movies:
+          Арендованные Фильмы:
         </Typography>
         <List>
-          {rentedMovies.map((movie) => (
-            <ListItem key={movie.id}>
-              <ListItemText primary={movie.title} />
+          {rentedMovies.length > 0 ? (
+            rentedMovies.map((movie) => (
+              <ListItem key={movie.id}>
+                <ListItemText primary={movie.title} />
+              </ListItem>
+            ))
+          ) : (
+            <ListItem>
+              <ListItemText primary="Нет арендованных фильмов." />
             </ListItem>
-          ))}
+          )}
         </List>
       </Grid>
     </Grid>

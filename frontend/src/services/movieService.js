@@ -1,6 +1,5 @@
-// src/services/movieService.js
 import axios from 'axios';
-const apiUrl = 'http://localhost:3000'; // Change to your backend API URL
+const apiUrl = 'http://localhost:3000'; // Измените на ваш API URL
 
 export const getMovies = async () => {
   const response = await axios.get(`${apiUrl}/movies`);

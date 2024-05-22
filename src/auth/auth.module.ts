@@ -11,7 +11,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         UsersModule,
         PassportModule,
         JwtModule.register({
-            secret: 'your-secret-key', // Заменить на свой секретный ключ
+            secret: '941b8b52b214d2c6fe992761908ae8d2cb2eea4003833556b72a695c3628a45d', // Заменить на свой секретный ключ
             signOptions: { expiresIn: '1d' },
         }),
     ],
