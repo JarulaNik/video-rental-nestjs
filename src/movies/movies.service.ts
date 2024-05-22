@@ -24,10 +24,7 @@ export class MoviesService {
         });
     }
 
-    async rentMovie(
-      rentMovieDto: RentMovieDto,
-      user: User,
-    ): Promise<RentedMovie> {
+    async rentMovie(rentMovieDto: RentMovieDto, user: User): Promise<RentedMovie> {
         const { movieId, rentalPeriod } = rentMovieDto;
         const rentalEndDate = this.calculateRentalEndDate(rentalPeriod);
 
@@ -35,6 +32,19 @@ export class MoviesService {
         const movie = await this.prisma.movie.findUnique({ where: { id: movieId } });
         if (!movie) {
             throw new Error('Movie not found');
+        }
+
+        // Проверяем, не арендован ли фильм уже этим пользователем
+        const isAlreadyRented = await this.prisma.rentedMovie.findFirst({
+            where: {
+                userId: user.id,
+                movieId,
+                rentalEndDate: { gt: new Date() }, // Проверяем, не истекла ли аренда
+            }
+        });
+
+        if (isAlreadyRented) {
+            throw new Error('Movie is already rented by you');
         }
 
         return this.prisma.rentedMovie.create({

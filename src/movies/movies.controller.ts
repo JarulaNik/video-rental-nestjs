@@ -7,8 +7,8 @@ import {
     Param,
     Delete,
     UseGuards,
-    Request,
-} from '@nestjs/common';
+    Request, HttpException, HttpStatus
+} from "@nestjs/common";
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -55,8 +55,13 @@ export class MoviesController {
       @Body() rentMovieDto: RentMovieDto,
       @Request() req,
     ) {
-        rentMovieDto.movieId = id; // Добавьте movieId в rentMovieDto
-        return this.moviesService.rentMovie(rentMovieDto, req.user);
+        try {
+            rentMovieDto.movieId = id;
+            return this.moviesService.rentMovie(rentMovieDto, req.user);
+        } catch (error) {
+            console.error('Error renting movie:', error);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @UseGuards(JwtAuthGuard)

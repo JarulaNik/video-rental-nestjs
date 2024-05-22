@@ -77,11 +77,11 @@ const MovieDetails = () => {
       await rentMovie(movieId, rentalPeriod);
       setRentSuccess(true);
       setTimeout(() => {
-        navigate('/profile'); // Перенаправление на профиль после аренды
+        navigate('/profile');
       }, 2000);
     } catch (error) {
       console.error('Error renting movie:', error);
-      setRentError(error.message); // Отображение ошибки аренды
+      setRentError(error?.response?.data?.message || 'Произошла ошибка при аренде.'); // Извлечение сообщения об ошибке
     }
   };
 
@@ -158,6 +158,7 @@ const MovieDetails = () => {
           </Alert>
         )}
         {/* Отображаем сообщение об ошибке аренды */}
+
         {rentError && (
           <Alert severity="error" style={{ marginTop: '16px' }}>
             {rentError}

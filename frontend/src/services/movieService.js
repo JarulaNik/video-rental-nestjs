@@ -12,14 +12,29 @@ export const getMovieById = async (movieId) => {
 };
 
 export const rentMovie = async (movieId, rentalPeriod) => {
-  const response = await axios.post(
-    `${apiUrl}/movies/${movieId}/rent`,
-    { rentalPeriod },
-    {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    }
-  );
-  return response.data;
+  const token = localStorage.getItem('token'); // Получение токена из localStorage
+
+  if (!token) {
+    // Обработка случая, если токен отсутствует
+    console.error('Токен авторизации не найден.');
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      `${apiUrl}/movies/${movieId}/rent`,
+      { rentalPeriod },
+      {
+        headers: { Authorization: `Bearer ${token}` }, // Передача токена
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error renting movie:', error);
+    // Обработка ошибок: вы можете вывести сообщение пользователю
+    // или вернуть ошибку в функцию, которая вызвала rentMovie.
+    throw error; // Передача ошибки вверх по цепочке вызовов
+  }
 };
 
 export const getRentedMovies = async () => {

@@ -8,12 +8,12 @@ import { LoginDto } from './dto/login.dto';
 @Injectable()
 export class AuthService {
     constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
+      private usersService: UsersService,
+      private jwtService: JwtService,
     ) {}
 
     async signup(signupDto: SignupDto): Promise<{ accessToken: string }> {
-        const { email, password, Role } = signupDto;
+        const { email, password } = signupDto; // Удалили Role
         const existingUser = await this.usersService.findByEmail(email);
         if (existingUser) {
             throw new UnauthorizedException('Пользователь с таким email уже существует');
@@ -22,9 +22,8 @@ export class AuthService {
         const user = await this.usersService.create({
             email,
             password: hashedPassword,
-            Role
         });
-        const payload = { email: user.email, sub: user.id };
+        const payload = { email: user.email, sub: user.id, Role: 'User' }; // Добавили Role в payload
         return {
             accessToken: this.jwtService.sign(payload),
         };
@@ -40,7 +39,7 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new UnauthorizedException('Неверный email или пароль');
         }
-        const payload = { email: user.email, sub: user.id };
+        const payload = { email: user.email, sub: user.id, Role: user.Role }; // Добавили Role в payload
         return {
             accessToken: this.jwtService.sign(payload),
         };
