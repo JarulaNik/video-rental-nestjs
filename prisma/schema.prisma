@@ -1,0 +1,54 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @default(uuid()) @db.Uuid
+  email       String        @unique
+  password    String
+  RentedMovie RentedMovie[]
+  Role        String
+}
+
+model Movie {
+  id           String        @id @default(uuid()) @map("_id") @db.Uuid
+  title        String
+  description  String
+  genre        String
+  duration     Int
+  imageUrl     String?       @unique // Добавлено @unique
+  rentalPrice  Json
+  releaseYear  Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  rentedMovies RentedMovie[]
+  picture      String?
+  Pictures     Pictures?
+}
+
+model RentedMovie {
+  userId        String    @db.Uuid
+  movieId       String    @db.Uuid
+  rentalEndDate DateTime?
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie         Movie     @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, movieId])
+}
+
+model Pictures {
+  id          String   @id @default(uuid())
+  path        String
+  url         String   @unique
+  uploadDate  DateTime @default(now())
+  tags        String?
+  description String?
+  visibility  Boolean  @default(true)
+  movie       Movie?   @relation(fields: [url], references: [imageUrl])
+}

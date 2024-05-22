@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "video-rental"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 1s
+
+#  app: # Добавьте описание вашего приложения NestJS
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    volumes:
+#      - ./:/app
+#    command: npm start
+#    depends_on:
+#      - db
+
+volumes:
+  postgres_data: {}
