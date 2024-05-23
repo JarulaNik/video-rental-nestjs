@@ -18,7 +18,7 @@ const LoadingError = ({ isLoading, error }) => {
     );
   }
 
-  return null; // Если нет ни загрузки, ни ошибки, возвращаем null
+  return null;
 };
 
 export default LoadingError;
