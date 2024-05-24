@@ -52,7 +52,7 @@ const UserProfile = () => {
         }}
       >
         <Alert severity="error">
-          {error}
+          {String(error)}
         </Alert>
       </div>
     );

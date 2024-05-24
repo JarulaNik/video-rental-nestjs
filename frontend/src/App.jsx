@@ -15,12 +15,13 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Cart from './pages/Cart.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkAuth, logoutUser } from './store/actions';
+import { logoutUser, checkAuthFailure } from './store/actions';
+import { getUser } from './services/authService.js';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main:  '#070404',
+      main: '#070404',
     },
     secondary: {
       main: '#f50057',
@@ -39,7 +40,14 @@ function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
-    dispatch(checkAuth());
+    const token = localStorage.getItem('token'); // Retrieve token from local storage
+    if (token) {
+      getUser()
+        .then(response => dispatch(checkAuthSuccess(response, token)))
+        .catch(() => dispatch(checkAuthFailure()))
+    } else {
+      dispatch(checkAuthFailure());
+    }
   }, [dispatch]);
 
   const handleLogout = () => {

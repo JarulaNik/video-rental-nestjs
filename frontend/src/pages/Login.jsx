@@ -2,20 +2,28 @@
 import React, { useState } from 'react';
 import { Grid, Typography, TextField, Button, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/authService';
 import LoginForm from '../components/LoginForm.jsx';
+import { useDispatch } from 'react-redux';
+import { loginFailure, loginSuccess } from '../store/actions.js'
+import { login } from '../services/authService.js';
 
 const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const handleSubmit = async (credentials) => {
     try {
-      await login(credentials.email, credentials.password);
-      navigate('/'); // Redirect to home page after successful login
+      const response = await login(credentials.email, credentials.password);
+      dispatch(loginSuccess(response.user, response.accessToken));
+      localStorage.setItem('token', response.accessToken);
+      navigate('/');
     } catch (error) {
-      setError(error.response.data.message);
+      console.error(error)
+      dispatch(loginFailure(error));
     }
+    // Redirect to home page after successful login
+
   };
 
   return (
