@@ -16,6 +16,7 @@ import Cart from './pages/Cart.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, checkAuthFailure, checkAuthSuccess } from "./store/actions";
 import { getUser } from './services/authService.js';
+import { AuthProvider } from './context/AuthContext';
 
 const theme = createTheme({
   palette: {
@@ -55,7 +56,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
+      <AuthProvider>
+
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component={Link} to="/" style={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
@@ -94,7 +96,8 @@ function App() {
             <Route path="/cart" element={<Cart />} />
           </Routes>
         </div>
-      </Router>
+
+        </AuthProvider>
     </ThemeProvider>
   );
 }

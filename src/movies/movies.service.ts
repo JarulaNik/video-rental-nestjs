@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { Movie, Prisma, RentedMovie } from '@prisma/client';
+import { Movie, RentedMovie } from '@prisma/client';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { RentMovieDto } from './dto/rent-movie.dto';
 import { User } from '@prisma/client';
 import { UpdateMovieDto } from "./dto/update-movie.dto";
+
 @Injectable()
 export class MoviesService {
     constructor(private prisma: PrismaService) { }
@@ -19,6 +20,7 @@ export class MoviesService {
     }
 
     async findOne(id: string): Promise<Movie | null> {
+
         return this.prisma.movie.findUnique({
             where: { id },
         });
@@ -39,7 +41,7 @@ export class MoviesService {
             where: {
                 userId: user.id,
                 movieId,
-                rentalEndDate: { gt: new Date() }, // Проверяем, не истекла ли аренда
+                rentalEndDate: { gt: new Date() },
             }
         });
 

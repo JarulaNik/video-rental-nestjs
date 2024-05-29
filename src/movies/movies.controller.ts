@@ -40,6 +40,7 @@ export class MoviesController {
         return this.moviesService.findAll();
     }
 
+    // movies.controller.ts
     @Get(':id')
     @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
     findOne(@Param('id') id: string) {

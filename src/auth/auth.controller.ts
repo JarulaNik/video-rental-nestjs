@@ -1,8 +1,12 @@
-import { Controller, Post, Body } from '@nestjs/common';
+
+
+import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { User } from '../users/entities/user.entity'; // Импортируйте User entity
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,5 +29,11 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
-    //TODO: добавить роут /profile
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    @ApiBearerAuth()
+    @ApiOkResponse({ description: 'Информация о профиле пользователя', type: User })
+    async getProfile(@Request() req) {
+        return req.user; // Возвращаем данные пользователя из request
+    }
 }

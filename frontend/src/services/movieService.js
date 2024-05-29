@@ -38,10 +38,23 @@ export const rentMovie = async (movieId, rentalPeriod) => {
 };
 
 export const getRentedMovies = async () => {
-  const response = await axios.get(`${apiUrl}/users/rented`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-  });
-  return response.data;
+
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    console.error('Токен авторизации не найден.');
+    return []; // Возвращаем пустой массив, если токена нет
+  }
+
+  try {
+    const response = await axios.get(`${apiUrl}/movies/rented`, { // Используйте правильный URL
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Ошибка при получении арендованных фильмов:', error);
+    throw error;
+  }
 };
 
 export const searchMovies = async (searchTerm) => {
