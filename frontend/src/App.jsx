@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -15,7 +14,7 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Cart from './pages/Cart.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser, checkAuthFailure } from './store/actions';
+import { logoutUser, checkAuthFailure, checkAuthSuccess } from "./store/actions";
 import { getUser } from './services/authService.js';
 
 const theme = createTheme({
@@ -34,7 +33,6 @@ const theme = createTheme({
     fontFamily: ['Roboto', 'sans-serif'],
   },
 });
-
 function App() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -54,7 +52,6 @@ function App() {
     dispatch(logoutUser());
     localStorage.removeItem('token');
   };
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -67,13 +64,11 @@ function App() {
             {isAuthenticated ? (
               <>
                 <Button component={Link} to="/profile" color="inherit">
-                  Profile
+                  Личный кабинет
                 </Button>
-                <Button component={Link} to="/cart" color="inherit">
-                  Cart
-                </Button>
+
                 <Button color="inherit" onClick={handleLogout}>
-                  Logout
+                  Выйти
                 </Button>
               </>
             ) : (
@@ -103,5 +98,4 @@ function App() {
     </ThemeProvider>
   );
 }
-
 export default App;
