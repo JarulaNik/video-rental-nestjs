@@ -1,0 +1,6 @@
+/* MovieDetails.css */
+
+.movie-card-container {
+    margin-left: 450px; /* Отступ 45 пикселей */
+    border-radius: 60px; /* Закругление 20 пикселей */
+}
