@@ -5,6 +5,8 @@ import { CreateMovieDto } from './dto/create-movie.dto';
 import { RentMovieDto } from './dto/rent-movie.dto';
 import { User } from '@prisma/client';
 import { UpdateMovieDto } from "./dto/update-movie.dto";
+import { CreateUserDto } from "../users/dto/create-user.dto";
+import { RentedMovieDto } from "./dto/rented-movie.dto";
 
 @Injectable()
 export class MoviesService {
@@ -93,23 +95,28 @@ export class MoviesService {
         });
     }
 
-    async getRentedMovies(userId: string): Promise<RentedMovie[]> {
+    async getRentedMovies(userId: string): Promise<RentedMovieDto[]> {
+        const userIdAsUuid = userId; // Здесь предполагается, что userId уже является строковым UUID
+
+        const now = new Date();
+        console.log(userId, typeof userId)
         const rentedMovies = await this.prisma.rentedMovie.findMany({
             where: {
-                userId,
-                rentalEndDate: { gt: new Date() },
+                userId: userIdAsUuid, // Используем userIdAsUuid
+                rentalEndDate: { gt: now },
             },
             include: {
                 movie: true,
+                user: true, // Добавляем user в include
             },
         });
 
-        // Преобразуем `rentedMovies` в `RentedMovie[]`
         return rentedMovies.map(rentedMovie => ({
             userId: rentedMovie.userId,
             movieId: rentedMovie.movieId,
             rentalEndDate: rentedMovie.rentalEndDate,
-            movie: rentedMovie.movie, // добавляем поле movie
+            user: rentedMovie.user ? new CreateUserDto() : null, // Создаем объект CreateUserDto
+            movie: rentedMovie.movie ? new CreateMovieDto() : null, // Создаем объект CreateMovieDto
         }));
     }
 }
