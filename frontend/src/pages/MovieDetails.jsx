@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Grid,
   Typography,
@@ -26,7 +26,7 @@ const MovieDetails = () => {
   const [rentError, setRentError] = useState(null);
   const navigate = useNavigate();
   const [isRentedByUser, setIsRentedByUser] = useState(false);
-
+  const isAuthenticated = !!localStorage.getItem('token');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,14 +166,20 @@ const MovieDetails = () => {
             <MenuItem value="lifetime">Навсегда</MenuItem>
           </Select>
         </FormControl>
-        <Button
-          variant="contained"
-          color={isRentedByUser ? 'inherit' : 'primary'}
-          onClick={handleRent}
-          disabled={rentSuccess || isRentedByUser}
-        >
-          {isRentedByUser ? 'Арендован' : 'Оплатить'}
-        </Button>
+        {isAuthenticated ? (
+          <Button
+            variant="contained"
+            color={isRentedByUser ? 'inherit' : 'primary'}
+            onClick={handleRent}
+            disabled={rentSuccess || isRentedByUser}
+          >
+            {isRentedByUser ? 'Оплачен' : 'Оплатить'}
+          </Button>
+        ) : (
+          <Button component={Link} to="/login" variant="contained" color="primary">
+            Войти, чтобы арендовать
+          </Button>
+        )}
         {/* Отображаем сообщение об успешной аренде */}
         {rentSuccess && (
           <Alert severity="success" style={{ marginTop: '16px' }}>
