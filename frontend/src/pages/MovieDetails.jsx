@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Grid,
@@ -23,20 +23,29 @@ const MovieDetails = () => {
   const [error, setError] = useState(null);
   const [rentalPeriod, setRentalPeriod] = useState('24h');
   const [rentSuccess, setRentSuccess] = useState(false);
-  const [rentError, setRentError] = useState(null); // Добавьте состояние для ошибки аренды
+  const [rentError, setRentError] = useState(null);
   const navigate = useNavigate();
+  const [isRentedByUser, setIsRentedByUser] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getMovieById(movieId);
         setMovie(data);
-        setIsLoading(false);
+
+        // Проверяем статус аренды после загрузки фильма
+        const rentedMoviesFromStorage = localStorage.getItem('rentedMovies');
+        const rentedMovieIds = rentedMoviesFromStorage ? JSON.parse(rentedMoviesFromStorage) : [];
+        setIsRentedByUser(rentedMovieIds.includes(movieId));
+
       } catch (error) {
         setError(error);
+      } finally {
         setIsLoading(false);
       }
     };
+
     fetchData();
   }, [movieId]);
 
@@ -76,12 +85,21 @@ const MovieDetails = () => {
     try {
       await rentMovie(movieId, rentalPeriod);
       setRentSuccess(true);
+
+      // После успешной аренды обновляем localStorage и состояние
+      const rentedMoviesFromStorage = localStorage.getItem('rentedMovies');
+      const updatedRentedMovies = rentedMoviesFromStorage
+        ? [...JSON.parse(rentedMoviesFromStorage), movie.id]
+        : [movie.id];
+      localStorage.setItem('rentedMovies', JSON.stringify(updatedRentedMovies));
+      setIsRentedByUser(true);
+
       setTimeout(() => {
         navigate('/profile');
       }, 2000);
     } catch (error) {
       console.error('Error renting movie:', error);
-      setRentError(error?.response?.data?.message || 'Произошла ошибка при аренде.'); // Извлечение сообщения об ошибке
+      setRentError(error?.response?.data?.message || 'Произошла ошибка при аренде.');
     }
   };
 
@@ -106,22 +124,22 @@ const MovieDetails = () => {
               {movie.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Genre: {movie.genre}
+              Жанр фильма: {movie.genre}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Release Year: {movie.releaseYear}
+              Год выпуска: {movie.releaseYear}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Description: {movie.description}
+              Описание: {movie.description}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Rental Prices:
+              Стоимость:
             </Typography>
             <ul>
-              <li>24h: ${movie.rentalPrice['24h']}</li>
-              <li>7d: ${movie.rentalPrice['7d']}</li>
-              <li>1m: ${movie.rentalPrice['1m']}</li>
-              <li>Lifetime: ${movie.rentalPrice.lifetime}</li>
+              <li>Сутки: ${movie.rentalPrice['24h']}</li>
+              <li>Неделя: ${movie.rentalPrice['7d']}</li>
+              <li>Месяц: ${movie.rentalPrice['1m']}</li>
+              <li>Навсегда: ${movie.rentalPrice.lifetime}</li>
             </ul>
           </CardContent>
         </Card>
@@ -133,7 +151,7 @@ const MovieDetails = () => {
           style={{ marginBottom: '16px' }}
         >
           <InputLabel id="rental-period-select-label">
-            Rental Period
+            Срок аренды
           </InputLabel>
           <Select
             labelId="rental-period-select-label"
@@ -142,19 +160,24 @@ const MovieDetails = () => {
             onChange={(e) => setRentalPeriod(e.target.value)}
             label="Rental Period"
           >
-            <MenuItem value="24h">24 hours</MenuItem>
-            <MenuItem value="7d">7 days</MenuItem>
-            <MenuItem value="1m">1 month</MenuItem>
-            <MenuItem value="lifetime">Lifetime</MenuItem>
+            <MenuItem value="24h">Сутки</MenuItem>
+            <MenuItem value="7d">Неделя</MenuItem>
+            <MenuItem value="1m">Месяц</MenuItem>
+            <MenuItem value="lifetime">Навсегда</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="contained" color="primary" onClick={handleRent} disabled={rentSuccess}>
-          Rent Now
+        <Button
+          variant="contained"
+          color={isRentedByUser ? 'inherit' : 'primary'}
+          onClick={handleRent}
+          disabled={rentSuccess || isRentedByUser}
+        >
+          {isRentedByUser ? 'Арендован' : 'Оплатить'}
         </Button>
         {/* Отображаем сообщение об успешной аренде */}
         {rentSuccess && (
           <Alert severity="success" style={{ marginTop: '16px' }}>
-            Фильм успешно арендован! Вы будете перенаправлены на страницу профиля.
+            Фильм успешно арендован! Наслаждайтесь просмотром с ЯроФилмс
           </Alert>
         )}
         {/* Отображаем сообщение об ошибке аренды */}
