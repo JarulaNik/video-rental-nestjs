@@ -21,6 +21,7 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RentMovieDto } from './dto/rent-movie.dto';
 import { Movie, RentedMovie } from "@prisma/client";
+import { RentedMovieDto } from "./dto/rented-movie.dto";
 
 @ApiTags('movies')
 @Controller('movies')
@@ -90,14 +91,11 @@ export class MoviesController {
     @ApiResponse({
         status: 200,
         description: 'List of rented movies',
-        schema: {
-            type: 'array',
-            items: {
-                $ref: '#/components/schemas/RentedMovie', // Указываем ссылку на схему RentedMovie
-            },
-        },
+        type: [RentedMovieDto], // Используем DTO
     })
-    async getRentedMovies(@Request() req): Promise<RentedMovie[]> {
-        return this.moviesService.getRentedMovies(req.user.id);
+    async getRentedMovies(@Request() req: any): Promise<RentedMovie[]> {
+        console.log(req.user)
+        const userId = await new ParseUUIDPipe().transform(req.user.id, { type: 'param' });
+        return this.moviesService.getRentedMovies(userId);
     }
 }
