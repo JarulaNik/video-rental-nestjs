@@ -103,6 +103,8 @@ const MovieDetails = () => {
     }
   };
 
+
+
   return (
     <Grid
       container
