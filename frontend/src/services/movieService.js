@@ -7,6 +7,9 @@ export const getMovies = async () => {
 };
 
 export const getMovieById = async (movieId) => {
+  if (!validateUUID(movieId)) {
+    throw new Error('Invalid UUID format');
+  }
   const response = await axios.get(`${apiUrl}/movies/${movieId}`);
   return response.data;
 };
@@ -21,6 +24,9 @@ export const rentMovie = async (movieId, rentalPeriod) => {
   }
 
   try {
+    if (!validateUUID(movieId)) {
+      throw new Error('Invalid UUID format');
+    }
     const response = await axios.post(
       `${apiUrl}/movies/${movieId}/rent`,
       { rentalPeriod },
@@ -38,7 +44,6 @@ export const rentMovie = async (movieId, rentalPeriod) => {
 };
 
 export const getRentedMovies = async () => {
-
   const token = localStorage.getItem('token');
 
   if (!token) {
@@ -47,7 +52,7 @@ export const getRentedMovies = async () => {
   }
 
   try {
-    const response = await axios.get(`${apiUrl}/movies/rented`, { // Используйте правильный URL
+    const response = await axios.get(`${apiUrl}/movies/rented`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
@@ -61,3 +66,12 @@ export const searchMovies = async (searchTerm) => {
   const response = await axios.get(`${apiUrl}/movies/search?keyword=${searchTerm}`);
   return response.data;
 };
+
+// Функция для проверки формата UUID
+function validateUUID(uuid) {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+}
+
+
+

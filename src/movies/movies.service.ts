@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { Movie, RentedMovie } from '@prisma/client';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -8,7 +8,10 @@ import { UpdateMovieDto } from "./dto/update-movie.dto";
 
 @Injectable()
 export class MoviesService {
-    constructor(private prisma: PrismaService) { }
+    private readonly logger = new Logger(MoviesService.name);
+
+    constructor(private prisma: PrismaService) {}
+
     async create(data: CreateMovieDto): Promise<Movie> {
         return this.prisma.movie.create({
             data,
@@ -20,7 +23,7 @@ export class MoviesService {
     }
 
     async findOne(id: string): Promise<Movie | null> {
-
+        this.logger.debug(`Received ID: ${id}`);
         return this.prisma.movie.findUnique({
             where: { id },
         });
@@ -88,5 +91,25 @@ export class MoviesService {
         return this.prisma.movie.delete({
             where: { id },
         });
+    }
+
+    async getRentedMovies(userId: string): Promise<RentedMovie[]> {
+        const rentedMovies = await this.prisma.rentedMovie.findMany({
+            where: {
+                userId,
+                rentalEndDate: { gt: new Date() },
+            },
+            include: {
+                movie: true,
+            },
+        });
+
+        // Преобразуем `rentedMovies` в `RentedMovie[]`
+        return rentedMovies.map(rentedMovie => ({
+            userId: rentedMovie.userId,
+            movieId: rentedMovie.movieId,
+            rentalEndDate: rentedMovie.rentalEndDate,
+            movie: rentedMovie.movie, // добавляем поле movie
+        }));
     }
 }

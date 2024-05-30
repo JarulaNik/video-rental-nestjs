@@ -7,7 +7,7 @@ import {
     Param,
     Delete,
     UseGuards,
-    Request, HttpException, HttpStatus
+    Request, HttpException, HttpStatus, Logger, ParseUUIDPipe
 } from "@nestjs/common";
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -15,15 +15,17 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import {
     ApiBearerAuth,
     ApiCreatedResponse,
-    ApiOkResponse,
-    ApiTags,
-} from '@nestjs/swagger';
+    ApiOkResponse, ApiResponse,
+    ApiTags
+} from "@nestjs/swagger";
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RentMovieDto } from './dto/rent-movie.dto';
+import { Movie, RentedMovie } from "@prisma/client";
 
 @ApiTags('movies')
 @Controller('movies')
 export class MoviesController {
+    private readonly logger = new Logger(MoviesController.name);
     constructor(private readonly moviesService: MoviesService) {}
 
     @UseGuards(JwtAuthGuard)
@@ -40,10 +42,9 @@ export class MoviesController {
         return this.moviesService.findAll();
     }
 
-    // movies.controller.ts
     @Get(':id')
-    @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
-    findOne(@Param('id') id: string) {
+    async findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Movie | null> {
+        this.logger.debug(`findOne called with id: ${id}`);
         return this.moviesService.findOne(id);
     }
 
@@ -70,8 +71,8 @@ export class MoviesController {
     @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
     @ApiBearerAuth()
     update(
-        @Param('id') id: string,
-        @Body() updateMovieDto: UpdateMovieDto,
+      @Param('id', new ParseUUIDPipe()) id: string,
+      @Body() updateMovieDto: UpdateMovieDto,
     ) {
         return this.moviesService.update(id, updateMovieDto);
     }
@@ -80,7 +81,23 @@ export class MoviesController {
     @Delete(':id')
     @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
     @ApiBearerAuth()
-    remove(@Param('id') id: string) {
+    remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.moviesService.delete(id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('rented')
+    @ApiResponse({
+        status: 200,
+        description: 'List of rented movies',
+        schema: {
+            type: 'array',
+            items: {
+                $ref: '#/components/schemas/RentedMovie', // Указываем ссылку на схему RentedMovie
+            },
+        },
+    })
+    async getRentedMovies(@Request() req): Promise<RentedMovie[]> {
+        return this.moviesService.getRentedMovies(req.user.id);
     }
 }
