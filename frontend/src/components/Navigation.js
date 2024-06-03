@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './Navigation.css'; // Добавьте стили при необходимости
+import './Navigation.css';
 
 const Navigation = () => {
   const { isAuthenticated } = useAuth();
