@@ -17,12 +17,12 @@ const Login = () => {
       const response = await login(credentials.email, credentials.password);
       dispatch(loginSuccess(response.user, response.accessToken));
       localStorage.setItem('token', response.accessToken);
-      navigate('/');
+      navigate('/movies');
     } catch (error) {
       console.error(error)
       dispatch(loginFailure(error));
     }
-    // Redirect to home page after successful login
+
 
   };
 
