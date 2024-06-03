@@ -11,23 +11,34 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "video-rental"]
+      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 1s
 
-#  app: # Добавьте описание вашего приложения NestJS
-#    build:
-#      context: .
-#      dockerfile: Dockerfile
-#    ports:
-#      - "3000:3000"
-#    volumes:
-#      - ./:/app
-#    command: npm start
-#    depends_on:
-#      - db
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile # Указывает на папку с Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - API_URL=http://backend:3000
+      - DOMAIN=http://frontend:8080
+
 
 volumes:
   postgres_data: {}

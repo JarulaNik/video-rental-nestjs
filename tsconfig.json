@@ -25,6 +25,8 @@
     "src/**/*.spec.ts"
   ],
   "paths": {
-    "@pages/*": ["frontend/src/pages/*"]
-  }
+    "@pages/*": ["frontend/src/pages/*"],
+    "prisma/*": ["src/prisma/*"]
+  },
+
 }
