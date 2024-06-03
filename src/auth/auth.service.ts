@@ -23,7 +23,7 @@ export class AuthService {
             email,
             password: hashedPassword,
         });
-        const payload = { email: user.email, sub: user.id, Role: 'User' }; // Добавили Role в payload
+        const payload = { email: user.email, sub: user.id, Role: 'User' };
         return {
             accessToken: this.jwtService.sign(payload),
         };
@@ -39,7 +39,7 @@ export class AuthService {
         if (!isPasswordValid) {
             throw new UnauthorizedException('Неверный email или пароль');
         }
-        const payload = { email: user.email, sub: user.id, Role: user.Role }; // Добавили Role в payload
+        const payload = { email: user.email, sub: user.id, Role: user.Role };
         return {
             accessToken: this.jwtService.sign(payload),
         };
