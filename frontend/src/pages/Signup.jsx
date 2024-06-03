@@ -1,9 +1,9 @@
-// src/pages/Signup.jsx
+
 import React, { useState } from 'react';
 import { Grid, Typography, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../services/authService';
-import SignupForm from '../components/SignupForm.jsx'; // Import the SignupForm component
+import SignupForm from '../components/SignupForm.jsx';
 
 const Signup = () => {
   const [error, setError] = useState(null);
