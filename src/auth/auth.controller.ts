@@ -6,7 +6,7 @@ import { SignupDto } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { User } from '../users/entities/user.entity'; // Импортируйте User entity
+import { User } from '../users/entities/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,6 +34,6 @@ export class AuthController {
     @ApiBearerAuth()
     @ApiOkResponse({ description: 'Информация о профиле пользователя', type: User })
     async getProfile(@Request() req) {
-        return req.user; // Возвращаем данные пользователя из request
+        return req.user;
     }
 }
