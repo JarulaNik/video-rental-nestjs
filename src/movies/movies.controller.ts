@@ -31,14 +31,14 @@ export class MoviesController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    @ApiCreatedResponse({ type: CreateMovieDto }) // Используем DTO
+    @ApiCreatedResponse({ type: CreateMovieDto })
     @ApiBearerAuth()
     create(@Body() createMovieDto: CreateMovieDto) {
         return this.moviesService.create(createMovieDto);
     }
 
     @Get()
-    @ApiOkResponse({ type: [CreateMovieDto] }) // Используем DTO
+    @ApiOkResponse({ type: [CreateMovieDto] })
     findAll() {
         return this.moviesService.findAll();
     }
@@ -69,7 +69,7 @@ export class MoviesController {
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
+    @ApiOkResponse({ type: CreateMovieDto })
     @ApiBearerAuth()
     update(
       @Param('id', new ParseUUIDPipe()) id: string,
@@ -80,7 +80,7 @@ export class MoviesController {
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    @ApiOkResponse({ type: CreateMovieDto }) // Используем DTO
+    @ApiOkResponse({ type: CreateMovieDto })
     @ApiBearerAuth()
     remove(@Param('id', new ParseUUIDPipe()) id: string) {
         return this.moviesService.delete(id);
@@ -91,7 +91,7 @@ export class MoviesController {
     @ApiResponse({
         status: 200,
         description: 'List of rented movies',
-        type: [RentedMovieDto], // Используем DTO
+        type: [RentedMovieDto],
     })
     async getRentedMovies(@Request() req: any): Promise<RentedMovie[]> {
         console.log(req.user)
