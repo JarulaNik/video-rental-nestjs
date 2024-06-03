@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/index.js',
   mode: 'development',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
     publicPath: '/'
   },
@@ -38,7 +38,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'public', 'index.html'),
+      template: './public/index.html'
     }),
     new webpack.DefinePlugin({
       'process.env.API_URL': JSON.stringify('http://localhost:3000'),

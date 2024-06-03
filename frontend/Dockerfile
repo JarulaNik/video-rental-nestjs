@@ -1,26 +1,22 @@
-FROM node:18-alpine as builder
+# Stage 1: Build the React app
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
-COPY package.json ./
-RUN npm install --production
-
-RUN apk update && apk add bash
+COPY package*.json ./
+RUN npm install
 
 COPY . .
-
-# Создайте папку build
-RUN mkdir /app/build
-
-# Запустите сборку фронтенда
 RUN npm run build
 
-# --- Production Image ---
+# Stage 2: Serve the app with nginx server
+FROM nginx:alpine
 
-FROM nginx:latest
+# Copy built React app to nginx's default public folder
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Скопируйте папку build из образа builder
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
