@@ -96,18 +96,18 @@ export class MoviesService {
     }
 
     async getRentedMovies(userId: string): Promise<RentedMovieDto[]> {
-        const userIdAsUuid = userId; // Здесь предполагается, что userId уже является строковым UUID
+        const userIdAsUuid = userId;
 
         const now = new Date();
         console.log(userId, typeof userId)
         const rentedMovies = await this.prisma.rentedMovie.findMany({
             where: {
-                userId: userIdAsUuid, // Используем userIdAsUuid
+                userId: userIdAsUuid,
                 rentalEndDate: { gt: now },
             },
             include: {
                 movie: true,
-                user: true, // Добавляем user в include
+                user: true,
             },
         });
 
@@ -115,8 +115,8 @@ export class MoviesService {
             userId: rentedMovie.userId,
             movieId: rentedMovie.movieId,
             rentalEndDate: rentedMovie.rentalEndDate,
-            user: rentedMovie.user ? new CreateUserDto() : null, // Создаем объект CreateUserDto
-            movie: rentedMovie.movie ? new CreateMovieDto() : null, // Создаем объект CreateMovieDto
+            user: rentedMovie.user ? new CreateUserDto() : null,
+            movie: rentedMovie.movie ? new CreateMovieDto() : null,
         }));
     }
 }
