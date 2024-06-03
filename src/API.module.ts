@@ -25,19 +25,17 @@ export function setupSwagger(app) {
   SwaggerModule.setup('api-docs', app, document, {
     // ... (дополнительные параметры)
     customSiteTitle: 'Video Rental API',
-    customCssUrl: './swagger.css', // Если у вас есть кастомный CSS для Swagger
-    customfavIcon: './favicon.ico', // Если у вас есть кастомный favicon
+    customCssUrl: './swagger.css',
+    customfavIcon: './favicon.ico',
     swaggerOptions: {
-      persistAuthorization: true, // Remember auth token
-      displayOperationId: true, // Show operationId
-      filter: true, // Filter operations
-      docExpansion: 'none', // Collapse all operations
-      showRequestDuration: true, // Show request duration
-      showExtensions: true, // Show extensions
-      supportedSubmitMethods: ['get', 'post', 'put', 'delete'], // Support GET, POST, PUT, DELETE methods
-      url: 'http://localhost:3000/api/api-docs', // URL of the Swagger document
-      // ... (дополнительные параметры)
+      persistAuthorization: true,
+      displayOperationId: true,
+      filter: true,
+      docExpansion: 'none',
+      showRequestDuration: true,
+      showExtensions: true,
+      supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+      url: 'http://localhost:3000/api/api-docs',
     },
-    // ... (дополнительные параметры)
   });
 }
