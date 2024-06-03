@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Grid,
@@ -17,6 +17,7 @@ import {
 import { getMovieById, rentMovie } from '../services/movieService';
 
 const MovieDetails = () => {
+  const [imageUrl, setImageUrl] = useState('');
   const { movieId } = useParams();
   const [movie, setMovie] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +30,8 @@ const MovieDetails = () => {
   const isAuthenticated = !!localStorage.getItem('token');
 
   useEffect(() => {
+    console.log('movieId:', movieId);
+    setImageUrl(`/images/${movieId}.jpg`);
     const fetchData = async () => {
       try {
         const data = await getMovieById(movieId);
@@ -94,9 +97,11 @@ const MovieDetails = () => {
       localStorage.setItem('rentedMovies', JSON.stringify(updatedRentedMovies));
       setIsRentedByUser(true);
 
+      // Перенаправление после небольшой задержки
       setTimeout(() => {
-        navigate('/profile');
+        navigate('/player');
       }, 2000);
+
     } catch (error) {
       console.error('Error renting movie:', error);
       setRentError(error?.response?.data?.message || 'Произошла ошибка при аренде.');
@@ -115,12 +120,14 @@ const MovieDetails = () => {
     >
       <Grid item xs={12} md={8}>
         <Card>
-          <CardMedia
-            component="img"
-            height="400"
-            image={movie.imageUrl}
-            alt={movie.title}
-          />
+          {!isLoading && imageUrl && ( //  Проверяем imageUrl
+            <CardMedia
+              component="img"
+              height="400"
+              image={imageUrl}
+              alt={movie.title}
+            />
+          )}
           <CardContent>
             <Typography gutterBottom variant="h5" component="div">
               {movie.title}
@@ -188,7 +195,7 @@ const MovieDetails = () => {
             Фильм успешно арендован! Наслаждайтесь просмотром с ЯроФилмс
           </Alert>
         )}
-        {/* Отображаем сообщение об ошибке аренды */}
+
 
         {rentError && (
           <Alert severity="error" style={{ marginTop: '16px' }}>
