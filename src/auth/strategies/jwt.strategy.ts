@@ -9,12 +9,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: '941b8b52b214d2c6fe992761908ae8d2cb2eea4003833556b72a695c3628a45d', // Заменить на свой секретный ключ
+            secretOrKey: '941b8b52b214d2c6fe992761908ae8d2cb2eea4003833556b72a695c3628a45d',
         });
     }
 
     async validate(payload: any) {
-        const user = await this.usersService.findOne({ id: payload.sub }); // Проверьте, что payload.sub содержит userId
-        return { ...user, id: user.id }; // Добавьте явное преобразование user.id в строку
+        const user = await this.usersService.findOne({ id: payload.sub });
+        return { ...user, id: user.id };
     }
 }
