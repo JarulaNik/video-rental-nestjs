@@ -22,7 +22,7 @@ model Movie {
   description  String
   genre        String
   duration     Int
-  imageUrl     String?       @unique // Добавлено @unique
+  imageUrl     String?       @unique
   rentalPrice  Json
   releaseYear  Int
   createdAt    DateTime      @default(now())
