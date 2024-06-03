@@ -1,4 +1,4 @@
-// src/store/authReducer.jsx
+
 const initialState = {
   isAuthenticated: false,
   user: null,
@@ -27,7 +27,7 @@ const authReducer = (state = initialState, action) => {
     case 'SIGNUP_SUCCESS':
       return {
         ...state,
-        isAuthenticated: false, // Not logged in yet
+        isAuthenticated: false,
         user: null,
         token: null,
         error: null,
