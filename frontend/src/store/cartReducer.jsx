@@ -1,4 +1,4 @@
-// src/store/cartReducer.jsx
+
 const initialState = {
   items: [],
 };
@@ -10,7 +10,7 @@ const cartReducer = (state = initialState, action) => {
         (item) => item.id === action.payload.id
       );
       if (existingItemIndex !== -1) {
-        // If the movie is already in the cart, update its rental period
+
         return {
           ...state,
           items: state.items.map((item, index) =>
@@ -23,7 +23,7 @@ const cartReducer = (state = initialState, action) => {
           ),
         };
       } else {
-        // If the movie is not in the cart, add it with the selected rental period
+
         return {
           ...state,
           items: [
@@ -47,10 +47,10 @@ const cartReducer = (state = initialState, action) => {
   }
 };
 
-// Actions
+
 export const addToCart = (movie, selectedRentalPeriod) => ({
   type: 'ADD_TO_CART',
-  payload: { ...movie, selectedRentalPeriod }, // Include selected rental period
+  payload: { ...movie, selectedRentalPeriod },
 });
 
 export const removeFromCart = (movieId) => ({
