@@ -1,8 +1,7 @@
-// src/store/actions.js
-import { useDispatch } from 'react-redux';
+
 import { signup, getUser } from '../services/authService';
 
-// Signup Actions
+
 export const signupSuccess = (user, token) => ({
   type: 'SIGNUP_SUCCESS',
   payload: { user, token },
@@ -19,7 +18,7 @@ export const signupUser = (email, password, name) => async (dispatch) => {
     dispatch(signupFailure(error));
   }
 };
-// Login Actions
+
 export const loginSuccess = (user, token) => ({
   type: 'LOGIN_SUCCESS',
   payload: { user, token },
