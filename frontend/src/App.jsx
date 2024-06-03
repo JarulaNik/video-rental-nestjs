@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import AppBar from '@mui/material/AppBar';
@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser, checkAuthFailure, checkAuthSuccess } from "./store/actions";
 import { getUser } from './services/authService.js';
 import { AuthProvider } from './context/AuthContext';
+import Player from './pages/Player.jsx';
 
 const theme = createTheme({
   palette: {
@@ -94,6 +95,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/cart" element={<Cart />} />
+            <Route
+              path="/player"
+              element={isAuthenticated ? <Player /> : <Navigate to="/login" />}
+            />
           </Routes>
         </div>
 
