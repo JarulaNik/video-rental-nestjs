@@ -9,31 +9,8 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchRentedMovies = async () => {
-      try {
-        const rentedMoviesData = await getRentedMovies();
-        setRentedMovies(rentedMoviesData);
-      } catch (error) {
-        console.error('Error fetching rented movies:', error);
-        setError(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    // Получаем фильмы при монтировании
-    fetchRentedMovies();
-
-    // Определяем интервал обновления (например, 60 секунд)
-    const updateInterval = 60000;
-
-    // Создаем интервал для обновления списка арендованных фильмов
-    const intervalId = setInterval(fetchRentedMovies, updateInterval);
-
-    // Очищаем интервал при размонтировании компонента
-    return () => clearInterval(intervalId);
-  }, []);
+  // Убираем код, связанный с получением и отображением арендованных фильмов
+  // ...
 
   if (isLoading) {
     return (
@@ -54,9 +31,8 @@ const UserProfile = () => {
   if (user) {
     return (
       <Grid container spacing={2} alignItems="center" justifyContent="center" style={{ paddingTop: '50px' }}>
-        {/* ... (Информация о пользователе - без изменений) */}
-
-        <Grid item xs={12} md={6}>
+        {/* Убираем секцию с арендованными фильмами */}
+        {/* <Grid item xs={12} md={6}>
           <Typography variant="h6" gutterBottom>
             Арендованные Фильмы:
           </Typography>
@@ -73,11 +49,11 @@ const UserProfile = () => {
               Нет арендованных фильмов.
             </Typography>
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
     );
   }
-  return null; // Или другой компонент/сообщение, если пользователь не аутентифицирован
+  return null;
 };
 
 export default UserProfile;
