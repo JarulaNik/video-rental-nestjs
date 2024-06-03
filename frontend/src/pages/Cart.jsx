@@ -43,10 +43,10 @@ const Cart = () => {
 
   const handleConfirmCheckout = () => {
     // TODO: Implement logic to proceed with checkout process
-    // For example, send data to backend for order processing
+
     setOpenConfirmationDialog(false);
     handleClearCart();
-    navigate('/profile'); // Redirect to profile page after successful checkout
+    navigate('/watch'); // Redirect to profile page after successful checkout
   };
 
   const handleCancelCheckout = () => {
