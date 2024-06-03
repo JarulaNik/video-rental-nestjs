@@ -16,7 +16,7 @@ const MovieList = () => {
         setMovies(data);
         setIsLoading(false);
       } catch (error) {
-        setError(error.message); // Отображаем сообщение об ошибке
+        setError(error.message);
         setIsLoading(false);
       }
     };
