@@ -2,19 +2,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Скопируйте package.json первым
+# Скопируйте файлы package.json и package-lock.json
 COPY package*.json ./
 
-# Скопируйте папку src
-COPY src ./src
-COPY tsconfig.json ./
-COPY prisma ./prisma
+# Установка переменной окружения для увеличения лимита памяти
+ENV NODE_OPTIONS="--max_old_space_size=2048"
 
+# Установка зависимостей
 RUN npm install
 
-RUN npm install -g @nestjs/cli
+# Копируйте остальные файлы проекта
+COPY . .
 
+# Открываем порт 3000
 EXPOSE 3000
 
-# Запустите ваш бекенд-сервер.
+# Команда для запуска приложения
 CMD ["npm", "run", "start:dev"]

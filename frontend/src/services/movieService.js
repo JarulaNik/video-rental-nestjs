@@ -1,5 +1,5 @@
 import axios from 'axios';
-const apiUrl = 'http://localhost:3000'; // Измените на ваш API URL
+const apiUrl = '188.68.213.107:3000'; // Измените на ваш API URL
 
 export const getMovies = async () => {
   const response = await axios.get(`${apiUrl}/movies`);

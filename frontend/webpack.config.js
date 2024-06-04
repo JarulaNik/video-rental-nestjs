@@ -41,7 +41,7 @@ module.exports = {
       template: './public/index.html'
     }),
     new webpack.DefinePlugin({
-      'process.env.API_URL': JSON.stringify('http://localhost:3000'),
+      'process.env.API_URL': JSON.stringify('http://188.68.213.107:3000'),
     }),
   ],
   devServer: {
