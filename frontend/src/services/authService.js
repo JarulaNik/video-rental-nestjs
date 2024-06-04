@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiUrl = process.env.API_URL;
+const apiUrl = '188.68.213.107:3000' ;
 
 export const signup = async (email, password) => {
   const response = await axios.post(`${apiUrl}/auth/signup`, { email, password });

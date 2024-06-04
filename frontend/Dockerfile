@@ -16,6 +16,9 @@ RUN chmod +x node_modules/.bin/*
 # Выполняем сборку
 RUN npm run build
 
+# Устанавливаем переменную окружения API_URL (для использования в React-приложении)
+ENV API_URL=http://backend:3000
+
 # Stage 2: Serve the app with nginx server
 FROM nginx:alpine
 

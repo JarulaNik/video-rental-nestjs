@@ -51,6 +51,7 @@
         "@types/passport-jwt": "^4.0.1",
         "@types/react": "^18.3.3",
         "@types/supertest": "^6.0.0",
+        "@types/webpack": "^5.28.5",
         "@typescript-eslint/eslint-plugin": "^6.0.0",
         "@typescript-eslint/parser": "^6.0.0",
         "eslint": "^8.42.0",
@@ -3944,6 +3945,17 @@
       "version": "7.0.3",
       "resolved": "https://registry.npmjs.org/@types/webidl-conversions/-/webidl-conversions-7.0.3.tgz",
       "integrity": "sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA=="
+    },
+    "node_modules/@types/webpack": {
+      "version": "5.28.5",
+      "resolved": "https://registry.npmjs.org/@types/webpack/-/webpack-5.28.5.tgz",
+      "integrity": "sha512-wR87cgvxj3p6D0Crt1r5avwqffqPXUkNlnQ1mjU93G7gCuFjufZR4I6j8cz5g1F1tTYpfOOFvly+cmIQwL9wvw==",
+      "dev": true,
+      "dependencies": {
+        "@types/node": "*",
+        "tapable": "^2.2.0",
+        "webpack": "^5"
+      }
     },
     "node_modules/@types/whatwg-url": {
       "version": "11.0.4",
@@ -11154,7 +11166,6 @@
       "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.91.0.tgz",
       "integrity": "sha512-rzVwlLeBWHJbmgTC/8TvAcu5vpJNII+MelQpylD4jNERPwpBJOE2lEcko1zJX3QJeLjTTAnQxn/OJ8bjDzVQaw==",
       "dev": true,
-      "peer": true,
       "dependencies": {
         "@types/eslint-scope": "^3.7.3",
         "@types/estree": "^1.0.5",
@@ -11220,7 +11231,6 @@
       "resolved": "https://registry.npmjs.org/eslint-scope/-/eslint-scope-5.1.1.tgz",
       "integrity": "sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==",
       "dev": true,
-      "peer": true,
       "dependencies": {
         "esrecurse": "^4.3.0",
         "estraverse": "^4.1.1"
@@ -11234,7 +11244,6 @@
       "resolved": "https://registry.npmjs.org/estraverse/-/estraverse-4.3.0.tgz",
       "integrity": "sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==",
       "dev": true,
-      "peer": true,
       "engines": {
         "node": ">=4.0"
       }

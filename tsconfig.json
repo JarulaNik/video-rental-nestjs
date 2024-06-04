@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "types": ["node", "@types/react", "jest"],
+    "types": ["node", "@types/react", "jest", "webpack"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,

@@ -5,39 +5,47 @@ services:
     image: postgres:latest
     restart: always
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Открываем порт для доступа к базе данных
     env_file:
-      - .env
+      - .env   # Загружаем конфигурацию базы данных из .env файла
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data  # Используем persistent volume для хранения данных базы данных
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 1s
+      test: ["CMD", "pg_isready", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB"]  # Проверка готовности базы данных
+      interval: 30s  # Проверяем каждые 30 секунд
+      timeout: 10s  # Ждем 10 секунд ответа
+      retries: 5  # Делаем 5 попыток
+      start_period: 1s  # Ждем 1 секунду перед началом проверок
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Используем Dockerfile для сборки фронтенда
     ports:
-      - "80:80"
+      - "80:80"  # Открываем порт 80 для доступа к фронтенду
     depends_on:
-      - backend
+      - backend  # Зависим от бекенда, чтобы он запустился первым
+    networks:
+      - default  # Подключаемся к сети `default`
 
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile  # Используем Dockerfile для сборки бекенда
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Открываем порт 3000 для доступа к бекенду
     depends_on:
-      - db
+      - db  # Зависим от базы данных
     environment:
-      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      - API_URL=http://backend:3000
-      - DOMAIN=http://frontend:80
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}  # Используем переменные окружения из .env
+      - API_URL=http://backend:3000  # Используем внутренний адрес бекенда
+      - DOMAIN=http://frontend:80  # Используем внутренний адрес фронтенда
+    networks:
+      - default  # Подключаемся к сети `default`
+
+networks:
+  default:
+    driver: bridge  # Используем стандартную сеть bridge
 
 volumes:
-  postgres_data: {}
+  postgres_data: {}  # Объявляем persistent volume для базы данных
